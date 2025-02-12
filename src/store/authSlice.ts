@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { loginUser, registerUser } from "../api/authApi";
 
 interface UserState {
@@ -73,7 +73,13 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       localStorage.removeItem("accessToken");
-      return { ...initialState, accessToken: null };
+      state.id = null;
+      state.name = null;
+      state.balance = 0;
+      state.currency = "EUR";
+      state.accessToken = null;
+      state.loading = false;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
