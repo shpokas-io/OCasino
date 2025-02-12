@@ -1,6 +1,8 @@
+import api from "./axiosInstance";
+
 export const getTransactions = async (
   page: number,
-  limit: numver,
+  limit: number,
   type?: string
 ) => {
   const params = { page, limit, type };
