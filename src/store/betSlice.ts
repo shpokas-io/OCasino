@@ -1,6 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { placeBet, getBets, cancelBet } from "../api/betApi";
 
+interface BetState {
+  // TODO: FIX TYPE ANY
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bets: any[];
+  loading: boolean;
+  error: string | null;
+}
+const initialState: BetState = {
+  bets: [],
+  loading: false,
+  error: null,
+};
+
 export const fetchBets = createAsyncThunk(
   "bets/fetchBets",
   async ({
@@ -32,7 +45,7 @@ export const removeBet = createAsyncThunk(
 
 const betSlice = createSlice({
   name: "bets",
-  initialState: { bets: [], loading: false, error: null },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -45,7 +58,7 @@ const betSlice = createSlice({
       })
       .addCase(fetchBets.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.error.message ?? "An unknown error occurred"; // ✅ Ensure error is always a string
       });
   },
 });
