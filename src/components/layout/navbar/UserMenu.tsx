@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store/store";
-import { logout } from "../store/authSlice";
+import { RootState } from "../../../store/store";
+import { logout } from "../../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const UserMenu: React.FC<{ onClose: () => void }> = ({ onClose }) => {
@@ -10,6 +10,7 @@ const UserMenu: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const { name, balance, currency } = useSelector(
     (state: RootState) => state.auth
   );
+  const formattedBalance = (balance ?? 0).toFixed(2);
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
@@ -20,7 +21,9 @@ const UserMenu: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         {name && (
           <div className="mb-1 text-sm text-gray-600">
             <span className="block font-medium">{name}</span>
-            Balance: {(balance ?? 0).toFixed(2)} {currency}
+            <span>
+              Balance: {formattedBalance} {currency}
+            </span>
           </div>
         )}
         <button

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../store/store";
+import { Link, useNavigate } from "react-router-dom";
 import { HiMenuAlt3, HiX, HiOutlineUserCircle } from "react-icons/hi";
 import UserMenu from "./UserMenu";
+import { logout } from "../../../store/authSlice";
 
 const NavBar: React.FC = () => {
   const { name, balance, currency } = useSelector(
@@ -11,14 +12,24 @@ const NavBar: React.FC = () => {
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
     setIsUserMenuOpen(false);
   };
+
   const toggleUserMenu = () => {
     setIsUserMenuOpen((prev) => !prev);
     setIsMenuOpen(false);
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
   return (
     <header className="sticky top-0 z-10 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -103,7 +114,7 @@ const NavBar: React.FC = () => {
                 </div>
                 <button
                   className="mt-2 w-full rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-                  onClick={() => {}}
+                  onClick={handleLogout}
                 >
                   Logout
                 </button>
