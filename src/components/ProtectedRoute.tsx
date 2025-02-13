@@ -3,9 +3,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
 const ProtectedRoute: React.FC = () => {
-  const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+  const { accessToken } = useSelector((state: RootState) => state.auth);
 
-  return accessToken ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!accessToken) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;
