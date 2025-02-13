@@ -1,3 +1,4 @@
+// src/components/NavBar.tsx
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
@@ -13,22 +14,18 @@ const NavBar: React.FC = () => {
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
   };
-
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
     setIsUserMenuOpen(false);
   };
-
   const toggleUserMenu = () => {
     setIsUserMenuOpen((prev) => !prev);
     setIsMenuOpen(false);
   };
-
   return (
     <header className="sticky top-0 z-10 bg-white shadow-sm">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
@@ -72,7 +69,7 @@ const NavBar: React.FC = () => {
                 {name && (
                   <div className="mb-1 text-sm text-gray-600">
                     <span className="block font-medium">{name}</span>
-                    Balance: {balance.toFixed(2)} {currency}
+                    Balance: {(balance ?? 0).toFixed(2)} {currency}
                   </div>
                 )}
                 <button
@@ -124,7 +121,7 @@ const NavBar: React.FC = () => {
               <div className="mt-4 border-t pt-4 text-gray-600">
                 <div className="mb-1 text-sm">
                   <span className="block font-medium">{name}</span>
-                  Balance: {balance.toFixed(2)} {currency}
+                  Balance: {(balance ?? 0).toFixed(2)} {currency}
                 </div>
                 <button
                   className="mt-2 w-full rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"

@@ -15,12 +15,9 @@ const DashboardPage: React.FC = () => {
   const { name, balance, currency } = useSelector(
     (state: RootState) => state.auth
   );
-
   useEffect(() => {
-    // Fetch only the 3 most recent bets
     dispatch(fetchBets({ page: 1, limit: 3 }));
   }, [dispatch]);
-
   return (
     <div className="flex min-h-screen flex-col">
       <NavBar />
@@ -32,7 +29,7 @@ const DashboardPage: React.FC = () => {
           <p className="text-gray-600">
             Your current balance:{" "}
             <span className="font-semibold">
-              {balance.toFixed(2)} {currency}
+              {(balance ?? 0).toFixed(2)} {currency ?? ""}
             </span>
           </p>
         </div>
@@ -50,6 +47,7 @@ const DashboardPage: React.FC = () => {
                     key={bet.id}
                     amount={bet.amount}
                     status={bet.status}
+                    userChoice={bet.userChoice}
                   />
                 ))}
               </ul>
@@ -57,7 +55,6 @@ const DashboardPage: React.FC = () => {
               <p className="text-gray-500">No recent bets found.</p>
             )}
           </section>
-
           <section className="rounded-lg bg-white p-4 shadow transition-shadow hover:shadow-lg">
             <h2 className="mb-3 text-xl font-semibold text-gray-700">
               Recent Transactions

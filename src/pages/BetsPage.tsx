@@ -21,55 +21,56 @@ const BetsPage: React.FC = () => {
     (state: RootState) => state.bets
   );
   const { balance, currency } = useSelector((state: RootState) => state.auth);
-
+  console.log("BetsPage state:", { balance, currency });
   useEffect(() => {
     dispatch(fetchBets({ page: 1, limit: 9999 }));
   }, [dispatch]);
-
-  // Define each wheel slice as a separate entity.
   const slices = [
     { color: "black", start: 0, end: 120 },
     { color: "red", start: 120, end: 240 },
     { color: "blue", start: 240, end: 360 },
   ];
-
-  // Given a pointer angle (in degrees), return the slice color.
   const getWinningColorFromPointer = (pointerAngle: number) => {
     const slice = slices.find(
       (s) => pointerAngle >= s.start && pointerAngle < s.end
     );
     return slice ? slice.color : null;
   };
-
   const handleSpin = async () => {
     if (betAmount <= 0) return;
-
+    console.log("handleSpin called:", { betAmount, selectedColor });
     setWinningColor(null);
     setOutcome("idle");
     setIsSpinning(true);
-
     try {
-      await dispatch(createBet(betAmount));
+      await dispatch(
+        createBet({ amount: betAmount, userChoice: selectedColor })
+      );
       const randomOffset = Math.random() * 360;
       const newRotation = rotation + 720 + randomOffset;
+      console.log("New rotation:", newRotation);
       setRotation(newRotation);
-
       setTimeout(() => {
         const normalizedRotation = newRotation % 360;
-        // Compute pointer angle (the fixed pointer is at the top)
         const pointerAngle = (360 - normalizedRotation) % 360;
+        console.log(
+          "Normalized rotation:",
+          normalizedRotation,
+          "pointerAngle:",
+          pointerAngle
+        );
         const resultColor = getWinningColorFromPointer(pointerAngle);
-
+        console.log("Result color:", resultColor);
         setWinningColor(resultColor);
         setOutcome(resultColor === selectedColor ? "won" : "lost");
         setIsSpinning(false);
         dispatch(fetchBets({ page: 1, limit: 9999 }));
       }, 2000);
     } catch (error) {
+      console.error("handleSpin error:", error);
       setIsSpinning(false);
     }
   };
-
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
       <NavBar />
@@ -79,7 +80,7 @@ const BetsPage: React.FC = () => {
           <p className="mt-2 text-gray-600">
             Current balance:{" "}
             <span className="font-semibold">
-              {balance.toFixed(2)} {currency}
+              {(balance ?? 0).toFixed(2)} {currency ?? ""}
             </span>
           </p>
         </div>
@@ -120,7 +121,6 @@ const BetsPage: React.FC = () => {
             ))}
           </div>
           <div className="relative mb-4 h-40 w-40">
-            {/* The spinning wheel */}
             <div
               style={{
                 width: "100%",
@@ -128,14 +128,9 @@ const BetsPage: React.FC = () => {
                 borderRadius: "50%",
                 transition: "transform 2s linear",
                 transform: `rotate(${rotation}deg)`,
-                background: `conic-gradient(
-                  black 0deg 120deg,
-                  red 120deg 240deg,
-                  blue 240deg 360deg
-                )`,
+                background: `conic-gradient(black 0deg 120deg, red 120deg 240deg, blue 240deg 360deg)`,
               }}
             />
-            {/* The fixed pointer */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 text-3xl text-yellow-400">
               ▼
             </div>
@@ -173,9 +168,17 @@ const BetsPage: React.FC = () => {
             <p className="text-gray-500">Loading your bets...</p>
           ) : bets && bets.length > 0 ? (
             <ul className="space-y-2">
-              {bets.map((bet) => (
-                <BetItem key={bet.id} amount={bet.amount} status={bet.status} />
-              ))}
+              {bets.map((bet) => {
+                console.log("Rendering bet:", bet);
+                return (
+                  <BetItem
+                    key={bet.id}
+                    amount={bet.amount}
+                    status={bet.status}
+                    userChoice={bet.userChoice}
+                  />
+                );
+              })}
             </ul>
           ) : (
             <p className="text-gray-500">No bets found.</p>
