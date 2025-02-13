@@ -1,13 +1,14 @@
+// src/pages/DashboardPage.tsx
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { RootState } from "../store/store";
 import { fetchBets } from "../store/betSlice";
+import BetItem from "../components/BetItem";
 
 const DashboardPage: React.FC = () => {
   const dispatch = useDispatch();
-
   const { bets, loading: betsLoading } = useSelector(
     (state: RootState) => state.bets
   );
@@ -16,13 +17,13 @@ const DashboardPage: React.FC = () => {
   );
 
   useEffect(() => {
+    // Fetch only the 3 most recent bets
     dispatch(fetchBets({ page: 1, limit: 3 }));
   }, [dispatch]);
 
   return (
     <div className="flex min-h-screen flex-col">
       <NavBar />
-
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold text-gray-800">
@@ -35,7 +36,6 @@ const DashboardPage: React.FC = () => {
             </span>
           </p>
         </div>
-
         <div className="grid gap-6 md:grid-cols-2">
           <section className="rounded-lg bg-white p-4 shadow transition-shadow hover:shadow-lg">
             <h2 className="mb-3 text-xl font-semibold text-gray-700">
@@ -46,13 +46,11 @@ const DashboardPage: React.FC = () => {
             ) : bets && bets.length > 0 ? (
               <ul className="space-y-2">
                 {bets.map((bet) => (
-                  <li
+                  <BetItem
                     key={bet.id}
-                    className="flex items-center justify-between border-b py-2"
-                  >
-                    <span>Amount: €{bet.amount}</span>
-                    <span>Status: {bet.status}</span>
-                  </li>
+                    amount={bet.amount}
+                    status={bet.status}
+                  />
                 ))}
               </ul>
             ) : (
@@ -68,7 +66,6 @@ const DashboardPage: React.FC = () => {
           </section>
         </div>
       </main>
-
       <Footer />
     </div>
   );
