@@ -6,9 +6,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<h1>Dashboard Page/Main</h1>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<h1>Dashboard Page/Main</h1>} />
       </Routes>
     </BrowserRouter>
   );
