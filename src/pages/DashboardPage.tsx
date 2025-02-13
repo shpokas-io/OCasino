@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../store/store";
 import NavBar from "../components/layout/navbar/NavBar";
 import Footer from "../components/layout/Footer";
 import { fetchBets } from "../store/betSlice";
-import BetList from "../components/BetList";
+import BetList from "../components/bets/BetList";
 
 const DashboardPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
