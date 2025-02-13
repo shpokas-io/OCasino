@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { loginUser, registerUser } from "../api/authApi";
 
 interface UserState {
@@ -93,6 +93,9 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.loading = false;
       state.error = null;
+    },
+    updateBalance(state, action: PayloadAction<number>) {
+      state.balance = action.payload;
     },
   },
   extraReducers: (builder) => {
