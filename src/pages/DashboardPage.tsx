@@ -1,9 +1,8 @@
-// src/pages/DashboardPage.tsx
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
+import NavBar from "../components/layout/navbar/NavBar";
+import Footer from "../components/layout/Footer";
 import { fetchBets } from "../store/betSlice";
 import BetList from "../components/BetList";
 
@@ -13,9 +12,14 @@ const DashboardPage: React.FC = () => {
   const { name, balance, currency } = useSelector(
     (state: RootState) => state.auth
   );
+
   useEffect(() => {
     dispatch(fetchBets({ page: 1, limit: 3 }));
   }, [dispatch]);
+
+  const formattedBalance = (balance ?? 0).toFixed(2);
+  const formattedCurrency = currency ?? "";
+
   return (
     <div className="flex min-h-screen flex-col">
       <NavBar />
@@ -27,7 +31,7 @@ const DashboardPage: React.FC = () => {
           <p className="text-gray-600">
             Your current balance:{" "}
             <span className="font-semibold">
-              {(balance ?? 0).toFixed(2)} {currency ?? ""}
+              {formattedBalance} {formattedCurrency}
             </span>
           </p>
         </div>
