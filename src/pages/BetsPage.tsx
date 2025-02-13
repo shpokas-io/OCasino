@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchBets } from "../store/betSlice";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
+import NavBar from "../components/layout/navbar/NavBar";
+import Footer from "../components/layout/Footer";
 import SpinningWheel from "../components/SpinningWheel";
 import BetList from "../components/BetList";
 
