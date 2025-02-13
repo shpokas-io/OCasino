@@ -1,4 +1,5 @@
 import api from "./axiosInstance";
+
 export const placeBet = async (amount: number, color: string) => {
   const response = await api.post("/bet", { amount, color });
   return response.data;
@@ -18,7 +19,6 @@ export const getBets = async ({
   const params: Record<string, string | number> = { page, limit };
   if (status) params.status = status;
   if (betId) params.id = betId;
-
   const response = await api.get("/my-bets", { params });
   return response.data;
 };

@@ -25,23 +25,20 @@ const BetsPage: React.FC = () => {
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold text-gray-800">Betting Page</h1>
         </div>
-
         <div className="mb-8 rounded-md bg-white p-6 shadow">
           <h2 className="mb-4 text-xl font-semibold text-gray-700">
             Place a Bet
           </h2>
           <BetForm />
         </div>
-
         <div className="mb-4">
           <BetsFilter
-            currentStatus={""}
+            currentStatus=""
             currentPage={page}
             limit={limit}
             total={total}
           />
         </div>
-
         <div className="rounded-md bg-white p-6 shadow">
           <h2 className="mb-4 text-xl font-semibold text-gray-700">All Bets</h2>
           {loading && <p className="text-gray-500">Loading your bets...</p>}

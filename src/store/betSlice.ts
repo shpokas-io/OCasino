@@ -1,5 +1,7 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { placeBet, getBets, cancelBet } from "../api/betApi";
+import { updateBalance } from "./authSlice";
+import { AppDispatch } from "./store";
 
 interface Bet {
   id: string;
@@ -18,6 +20,7 @@ interface BetState {
   loading: boolean;
   error: string | null;
 }
+
 const initialState: BetState = {
   bets: [],
   total: 0,
@@ -40,9 +43,10 @@ export const fetchBets = createAsyncThunk(
   ) => {
     try {
       return await getBets({ page, limit, status, betId });
-    } catch (err: any) {
+    } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch bets"
+        (err as { response?: { data?: { message?: string } } }).response?.data
+          ?.message || "Failed to fetch bets"
       );
     }
   }
@@ -52,13 +56,16 @@ export const createBet = createAsyncThunk(
   "bets/createBet",
   async (
     { amount, color }: { amount: number; color: string },
-    { rejectWithValue }
+    { dispatch, rejectWithValue }
   ) => {
     try {
-      return await placeBet(amount, color);
-    } catch (err: any) {
+      const response = await placeBet(amount, color);
+      dispatch(updateBalance(response.balance) as unknown as AppDispatch);
+      return response;
+    } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to place bet"
+        (err as { response?: { data?: { message?: string } } }).response?.data
+          ?.message || "Failed to place bet"
       );
     }
   }
@@ -66,12 +73,15 @@ export const createBet = createAsyncThunk(
 
 export const removeBet = createAsyncThunk(
   "bets/removeBet",
-  async (betId: string, { rejectWithValue }) => {
+  async (betId: string, { dispatch, rejectWithValue }) => {
     try {
-      return await cancelBet(betId);
-    } catch (err: any) {
+      const response = await cancelBet(betId);
+      dispatch(updateBalance(response.balance) as unknown as AppDispatch);
+      return response;
+    } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to cancel bet"
+        (err as { response?: { data?: { message?: string } } }).response?.data
+          ?.message || "Failed to cancel bet"
       );
     }
   }
@@ -81,10 +91,10 @@ const betSlice = createSlice({
   name: "bets",
   initialState,
   reducers: {
-    setPage(state, action) {
+    setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
     },
-    setLimit(state, action) {
+    setLimit(state, action: PayloadAction<number>) {
       state.limit = action.payload;
     },
   },
@@ -105,19 +115,17 @@ const betSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
       .addCase(createBet.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createBet.fulfilled, (state, action) => {
+      .addCase(createBet.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(createBet.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })
-
       .addCase(removeBet.pending, (state) => {
         state.loading = true;
         state.error = null;

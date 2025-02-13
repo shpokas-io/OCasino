@@ -22,9 +22,8 @@ let userData = {
 if (storedUser) {
   try {
     userData = JSON.parse(storedUser);
-  } catch (err) {
-    console.error("Error parsing user data:", err);
-  }
+    //TODO: FIX empty block later
+  } catch {}
 }
 
 const initialState: UserState = {
@@ -96,6 +95,16 @@ const authSlice = createSlice({
     },
     updateBalance(state, action: PayloadAction<number>) {
       state.balance = action.payload;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: state.id,
+          name: state.name,
+          balance: state.balance,
+          currency: state.currency,
+          accessToken: state.accessToken,
+        })
+      );
     },
   },
   extraReducers: (builder) => {
@@ -126,7 +135,6 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
-
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -141,5 +149,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, updateBalance } = authSlice.actions;
 export default authSlice.reducer;
