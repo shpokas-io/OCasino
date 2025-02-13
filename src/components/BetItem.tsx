@@ -1,4 +1,3 @@
-// src/components/BetItem.tsx
 import React from "react";
 
 export interface BetItemProps {
@@ -14,7 +13,6 @@ const statusClasses: Record<string, string> = {
 };
 
 const BetItem: React.FC<BetItemProps> = ({ amount, status, userChoice }) => {
-  console.log("BetItem props:", { amount, status, userChoice });
   const displayAmount =
     typeof amount === "object" && amount !== null && "amount" in amount
       ? amount.amount
