@@ -11,12 +11,28 @@ interface UserState {
   error: string | null;
 }
 
-const initialState: UserState = {
+const storedUser = localStorage.getItem("user");
+let userData = {
   id: null,
   name: null,
   balance: 0,
   currency: "EUR",
-  accessToken: localStorage.getItem("accessToken") ?? null,
+  accessToken: null,
+};
+if (storedUser) {
+  try {
+    userData = JSON.parse(storedUser);
+  } catch (err) {
+    console.error("Error parsing user data:", err);
+  }
+}
+
+const initialState: UserState = {
+  id: userData.id,
+  name: userData.name,
+  balance: userData.balance,
+  currency: userData.currency,
+  accessToken: userData.accessToken,
   loading: false,
   error: null,
 };
@@ -31,8 +47,6 @@ export const login = createAsyncThunk(
       const response = await loginUser({ email, password });
       localStorage.setItem("accessToken", response.accessToken);
       return response;
-      //TODO: Fix any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
     }
@@ -57,8 +71,6 @@ export const register = createAsyncThunk(
   ) => {
     try {
       return await registerUser({ name, email, password, confirmPassword });
-      //TODO: Fix any
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
@@ -73,6 +85,7 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
       state.id = null;
       state.name = null;
       state.balance = 0;
@@ -95,8 +108,30 @@ const authSlice = createSlice({
         state.balance = action.payload.balance;
         state.currency = action.payload.currency;
         state.accessToken = action.payload.accessToken;
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: action.payload.id,
+            name: action.payload.name,
+            balance: action.payload.balance,
+            currency: action.payload.currency,
+            accessToken: action.payload.accessToken,
+          })
+        );
       })
       .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      .addCase(register.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(register.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(register.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
