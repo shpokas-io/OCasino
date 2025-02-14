@@ -35,6 +35,7 @@ const RegisterPage: React.FC = () => {
           {error && (
             <p className="rounded bg-red-100 px-3 py-2 text-red-600">{error}</p>
           )}
+          //TODO: fix required errors, need to find better validations method
           <FormInput
             label="Name"
             value={name}
@@ -62,7 +63,6 @@ const RegisterPage: React.FC = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-
           <Button
             type="submit"
             text="Register"

@@ -7,7 +7,7 @@ import Footer from "../components/layout/Footer";
 import BetForm from "../components/bets/BetForm";
 import BetsFilter from "../components/bets/BetsFilter";
 import BetList from "../components/bets/BetList";
-import SpinningWheel from "../components/SpinningWheel";
+import SpinningWheel from "../components/bets/SpinningWheel";
 const BetsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { bets, loading, error, page, limit, total } = useSelector(
