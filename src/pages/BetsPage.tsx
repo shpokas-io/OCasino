@@ -6,7 +6,7 @@ import NavBar from "../components/layout/navbar/NavBar";
 import Footer from "../components/layout/Footer";
 import BetForm from "../components/bets/BetForm";
 import BetsFilter from "../components/bets/BetsFilter";
-import BetsList from "../components/bets/BetList";
+import BetList from "../components/bets/BetList";
 import SpinningWheel from "../components/SpinningWheel";
 const BetsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,7 +15,6 @@ const BetsPage: React.FC = () => {
   );
   const [amount, setAmount] = useState<number>(1);
   const [color, setColor] = useState<"black" | "red" | "blue">("red");
-  const [formError, setFormError] = useState("");
   const [spinResult, setSpinResult] = useState<{
     outcome: "won" | "lost";
     message: string;
@@ -24,7 +23,7 @@ const BetsPage: React.FC = () => {
     dispatch(fetchBets({ page: 1, limit: 10 }));
   }, [dispatch]);
   const handleSpinComplete = (
-    winningColor: string,
+    winningColor: "black" | "red" | "blue",
     outcome: "won" | "lost"
   ) => {
     setSpinResult({
@@ -43,15 +42,7 @@ const BetsPage: React.FC = () => {
           <h2 className="mb-4 text-xl font-semibold text-gray-700">
             Place a Bet
           </h2>
-          <BetForm
-            amount={amount}
-            setAmount={setAmount}
-            error={formError}
-            color={"black"}
-            setColor={function (value: "black" | "red" | "blue"): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
+          <BetForm amount={amount} setAmount={setAmount} error="" />
           <div className="mt-4">
             <SpinningWheel
               betAmount={amount}
@@ -85,7 +76,7 @@ const BetsPage: React.FC = () => {
           {!loading && !error && bets.length === 0 && (
             <p className="text-gray-500">No bets found.</p>
           )}
-          {!loading && !error && bets.length > 0 && <BetsList bets={bets} />}
+          {!loading && !error && bets.length > 0 && <BetList bets={bets} />}
         </div>
       </div>
       <Footer />

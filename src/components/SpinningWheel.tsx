@@ -5,7 +5,10 @@ import { createBet, fetchBets } from "../store/betSlice";
 interface SpinningWheelProps {
   betAmount: number;
   selectedColor: "black" | "red" | "blue";
-  onSpinComplete: (winningColor: string, outcome: "won" | "lost") => void;
+  onSpinComplete: (
+    winningColor: "black" | "red" | "blue",
+    outcome: "won" | "lost"
+  ) => void;
   onSelectColor: (color: "black" | "red" | "blue") => void;
 }
 const SpinningWheel: React.FC<SpinningWheelProps> = ({
@@ -17,21 +20,25 @@ const SpinningWheel: React.FC<SpinningWheelProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const [rotation, setRotation] = useState<number>(0);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
-  const slices = [
+  const slices: {
+    color: "black" | "red" | "blue";
+    start: number;
+    end: number;
+  }[] = [
     { color: "black", start: 0, end: 120 },
     { color: "red", start: 120, end: 240 },
     { color: "blue", start: 240, end: 360 },
   ];
-  const getWinningColor = (pointerAngle: number) => {
+  const getWinningColor = (pointerAngle: number): "black" | "red" | "blue" => {
     const slice = slices.find(
       (s) => pointerAngle >= s.start && pointerAngle < s.end
     );
-    return slice ? slice.color : "";
+    return slice ? slice.color : "black";
   };
   const handleSpin = async () => {
     if (betAmount <= 0) return;
     setIsSpinning(true);
-    await dispatch(createBet({ amount: betAmount, userChoice: selectedColor }));
+    await dispatch(createBet({ amount: betAmount, color: selectedColor }));
     const randomOffset = Math.random() * 360;
     const newRotation = rotation + 720 + randomOffset;
     setRotation(newRotation);
