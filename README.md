@@ -104,6 +104,8 @@ The app will be available at **`http://localhost:5173/`**.
 
 **Total Coding Time:** 9 hrs 12 mins
 
+- The real time is much higher it is only the hands on the keyboard and VSCODE.
+
 ### 🛠 Language Breakdown:
 
 | Language   | Time Spent | Percentage |
@@ -180,3 +182,4 @@ The app will be available at **`http://localhost:5173/`**.
 - **Recent bets improvement**: Should include a CTA instead of a `no bets` message for better UX.
 - **Dark/Light mode issue**: Implemented but not working correctly. The biggest issue is that it was not started from a React hook for dark mode, which would have made it much easier. A note for future projects.
 - **Bets page re-rendering**: Once a user clicks spin, a re-render happens. Need a solution to fix this.
+- **No helmet solution**: For more security there should be some helmet solution.
