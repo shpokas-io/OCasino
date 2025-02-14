@@ -10,9 +10,7 @@ import { useNavigate, Link } from "react-router-dom";
 const RegisterPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
   const { loading, error } = useSelector((state: RootState) => state.auth);
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +33,6 @@ const RegisterPage: React.FC = () => {
           {error && (
             <p className="rounded bg-red-100 px-3 py-2 text-red-600">{error}</p>
           )}
-          //TODO: fix required errors, need to find better validations method
           <FormInput
             label="Name"
             value={name}

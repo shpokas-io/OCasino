@@ -1,3 +1,4 @@
+import React from "react";
 import BetItem from "./BetItem";
 
 export interface Bet {

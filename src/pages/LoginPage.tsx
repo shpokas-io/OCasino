@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useEffect, useState, FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { login } from "../store/authSlice";
@@ -11,9 +11,7 @@ const LoginPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const location = useLocation();
-
   const { loading, error } = useSelector((state: RootState) => state.auth);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [inactivityMessage, setInactivityMessage] = useState("");
@@ -59,7 +57,6 @@ const LoginPage: React.FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-
           <Button
             type="submit"
             text="Sign In"

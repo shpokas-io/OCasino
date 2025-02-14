@@ -35,11 +35,13 @@ const BetsFilter: React.FC<BetsFilterProps> = ({
   return (
     <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
       <div>
-        <label className="mr-2 text-sm font-semibold">Filter by status:</label>
+        <label className="mr-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+          Filter by status:
+        </label>
         <select
           value={status}
           onChange={handleStatusChange}
-          className="rounded border-gray-300 p-1"
+          className="rounded border-gray-300 dark:border-gray-600 p-1 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200"
         >
           <option value="">All</option>
           <option value="win">Win</option>

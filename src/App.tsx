@@ -1,3 +1,6 @@
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "./store/store";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -8,6 +11,16 @@ import TransactionsPage from "./pages/TransactionsPage";
 import IdleTimer from "./util/IdleTimer";
 
 function App() {
+  const theme = useSelector((state: RootState) => state.theme.value);
+
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
+
   return (
     <BrowserRouter>
       <IdleTimer />

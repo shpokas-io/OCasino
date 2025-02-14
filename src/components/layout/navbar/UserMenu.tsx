@@ -4,7 +4,7 @@ import { RootState } from "../../../store/store";
 import { logout } from "../../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
-//TODO: FIX BELOW
+//TODO: fix below
 const UserMenu: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -12,15 +12,17 @@ const UserMenu: React.FC<{ onClose: () => void }> = ({ onClose }) => {
     (state: RootState) => state.auth
   );
   const formattedBalance = (balance ?? 0).toFixed(2);
+
   const handleLogout = () => {
     dispatch(logout());
     navigate("/login");
   };
+
   return (
-    <div className="absolute right-0 top-16 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-      <div className="p-3">
+    <div className="absolute right-0 top-16 w-48 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5">
+      <div className="p-3 text-gray-700 dark:text-gray-200">
         {name && (
-          <div className="mb-1 text-sm text-gray-600">
+          <div className="mb-1 text-sm">
             <span className="block font-medium">{name}</span>
             <span>
               Balance: {formattedBalance} {currency}

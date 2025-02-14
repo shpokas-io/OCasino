@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { createBet, fetchBets } from "../../store/betSlice";
+
 interface SpinningWheelProps {
   betAmount: number;
   selectedColor: "black" | "red" | "blue";
@@ -11,6 +12,7 @@ interface SpinningWheelProps {
   ) => void;
   onSelectColor: (color: "black" | "red" | "blue") => void;
 }
+
 const SpinningWheel: React.FC<SpinningWheelProps> = ({
   betAmount,
   selectedColor,
@@ -20,21 +22,20 @@ const SpinningWheel: React.FC<SpinningWheelProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const [rotation, setRotation] = useState<number>(0);
   const [isSpinning, setIsSpinning] = useState<boolean>(false);
-  const slices: {
-    color: "black" | "red" | "blue";
-    start: number;
-    end: number;
-  }[] = [
+  const slices = [
     { color: "black", start: 0, end: 120 },
     { color: "red", start: 120, end: 240 },
     { color: "blue", start: 240, end: 360 },
   ];
+
   const getWinningColor = (pointerAngle: number): "black" | "red" | "blue" => {
     const slice = slices.find(
       (s) => pointerAngle >= s.start && pointerAngle < s.end
     );
+    //TODO: fix below
     return slice ? slice.color : "black";
   };
+
   const handleSpin = async () => {
     if (betAmount <= 0) return;
     setIsSpinning(true);
@@ -52,6 +53,7 @@ const SpinningWheel: React.FC<SpinningWheelProps> = ({
       onSpinComplete(resultColor, outcome);
     }, 2000);
   };
+
   return (
     <div className="flex flex-col items-center">
       <div className="relative mb-4 h-40 w-40">
@@ -73,11 +75,11 @@ const SpinningWheel: React.FC<SpinningWheelProps> = ({
           <button
             key={slice.color}
             onClick={() => onSelectColor(slice.color)}
-            className={`h-8 w-8 rounded-full border-2 ${
+            className={
               slice.color === selectedColor
-                ? "border-yellow-400 ring-2 ring-yellow-400"
-                : "border-gray-300"
-            }`}
+                ? "h-8 w-8 rounded-full border-2 border-yellow-400 ring-2 ring-yellow-400"
+                : "h-8 w-8 rounded-full border-2 border-gray-300 dark:border-gray-600"
+            }
             style={{ backgroundColor: slice.color }}
           />
         ))}
@@ -92,4 +94,5 @@ const SpinningWheel: React.FC<SpinningWheelProps> = ({
     </div>
   );
 };
+
 export default SpinningWheel;

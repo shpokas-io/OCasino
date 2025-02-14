@@ -54,22 +54,24 @@ const TransactionsPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-100">
+    <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-900">
       <NavBar />
       <div className="mx-auto w-full max-w-4xl flex-1 p-4 sm:p-6 lg:p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">Transactions</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+            Transactions
+          </h1>
         </div>
-        <div className="mb-4 rounded-md bg-white p-4 shadow">
+        <div className="mb-4 rounded-md bg-white dark:bg-gray-800 p-4 shadow">
           <div className="mb-4 flex flex-col space-y-4 sm:flex-row sm:items-end sm:justify-between sm:space-y-0">
             <div className="flex flex-col">
-              <label className="mb-1 text-sm font-semibold text-gray-700">
+              <label className="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Filter by Type
               </label>
               <select
                 value={filterType}
                 onChange={handleTypeChange}
-                className="rounded border-gray-300 p-2"
+                className="rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200"
               >
                 <option value="">All</option>
                 <option value="bet">Lost</option>
@@ -78,14 +80,14 @@ const TransactionsPage: React.FC = () => {
               </select>
             </div>
             <div className="flex flex-col">
-              <label className="mb-1 text-sm font-semibold text-gray-700">
+              <label className="mb-1 text-sm font-semibold text-gray-700 dark:text-gray-200">
                 Filter by ID
               </label>
               <input
                 type="text"
                 value={filterId}
                 onChange={handleIdChange}
-                className="rounded border-gray-300 p-2"
+                className="rounded border-gray-300 dark:border-gray-600 p-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200"
                 placeholder="Transaction ID"
               />
             </div>
@@ -96,11 +98,17 @@ const TransactionsPage: React.FC = () => {
             onPageChange={onPageChange}
           />
         </div>
-        <div className="rounded-md bg-white p-4 shadow">
-          {loading && <p className="text-gray-500">Loading transactions...</p>}
+        <div className="rounded-md bg-white dark:bg-gray-800 p-4 shadow">
+          {loading && (
+            <p className="text-gray-500 dark:text-gray-400">
+              Loading transactions...
+            </p>
+          )}
           {error && <p className="text-red-500">{error}</p>}
           {!loading && !error && transactions.length === 0 && (
-            <p className="text-gray-500">No transactions found.</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              No transactions found.
+            </p>
           )}
           {!loading && !error && transactions.length > 0 && (
             <TransactionList transactions={transactions} />

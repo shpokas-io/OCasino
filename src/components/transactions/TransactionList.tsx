@@ -14,23 +14,23 @@ interface TransactionListProps {
 
 const TransactionList: React.FC<TransactionListProps> = ({ transactions }) => {
   return (
-    <ul className="divide-y divide-gray-200">
+    <ul className="divide-y divide-gray-200 dark:divide-gray-700">
       {transactions.map((tx) => (
         <li
           key={tx.id}
-          className="flex flex-col py-2 sm:flex-row sm:items-center sm:justify-between"
+          className="flex flex-col py-2 sm:flex-row sm:items-center sm:justify-between text-gray-700 dark:text-gray-200"
         >
-          <div className="text-gray-700">
+          <div>
             <span className="font-medium">ID:</span> {tx.id}
           </div>
-          <div className="text-gray-700">
+          <div>
             <span className="font-medium">Date:</span>{" "}
             {format(new Date(tx.createdAt), "yyyy-MM-dd HH:mm:ss")}
           </div>
-          <div className="text-gray-700">
+          <div>
             <span className="font-medium">Type:</span> {tx.type.toUpperCase()}
           </div>
-          <div className="text-gray-700">
+          <div>
             <span className="font-medium">Amount:</span> €{tx.amount.toFixed(2)}
           </div>
         </li>

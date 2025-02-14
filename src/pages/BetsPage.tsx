@@ -8,6 +8,7 @@ import BetForm from "../components/bets/BetForm";
 import BetsFilter from "../components/bets/BetsFilter";
 import BetList from "../components/bets/BetList";
 import SpinningWheel from "../components/bets/SpinningWheel";
+
 const BetsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { bets, loading, error, page, limit, total } = useSelector(
@@ -19,9 +20,11 @@ const BetsPage: React.FC = () => {
     outcome: "won" | "lost";
     message: string;
   } | null>(null);
+
   useEffect(() => {
     dispatch(fetchBets({ page: 1, limit: 10 }));
   }, [dispatch]);
+
   const handleSpinComplete = (
     winningColor: "black" | "red" | "blue",
     outcome: "won" | "lost"
@@ -31,15 +34,18 @@ const BetsPage: React.FC = () => {
       message: `You ${outcome}! Winning color: ${winningColor}`,
     });
   };
+
   return (
-    <div className="flex min-h-screen flex-col bg-gray-100">
+    <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-900">
       <NavBar />
       <div className="mx-auto w-full max-w-4xl flex-1 p-4 sm:p-6 lg:p-8">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">Betting Page</h1>
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+            Betting Page
+          </h1>
         </div>
-        <div className="mb-8 rounded-md bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold text-gray-700">
+        <div className="mb-8 rounded-md bg-white dark:bg-gray-800 p-6 shadow">
+          <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
             Place a Bet
           </h2>
           <BetForm amount={amount} setAmount={setAmount} error="" />
@@ -53,9 +59,11 @@ const BetsPage: React.FC = () => {
           </div>
           {spinResult && (
             <p
-              className={`mt-4 text-center text-lg font-semibold ${
-                spinResult.outcome === "won" ? "text-green-600" : "text-red-600"
-              }`}
+              className={
+                spinResult.outcome === "won"
+                  ? "mt-4 text-center text-lg font-semibold text-green-600"
+                  : "mt-4 text-center text-lg font-semibold text-red-600"
+              }
             >
               {spinResult.message}
             </p>
@@ -69,12 +77,18 @@ const BetsPage: React.FC = () => {
             total={total}
           />
         </div>
-        <div className="rounded-md bg-white p-6 shadow">
-          <h2 className="mb-4 text-xl font-semibold text-gray-700">All Bets</h2>
-          {loading && <p className="text-gray-500">Loading your bets...</p>}
+        <div className="rounded-md bg-white dark:bg-gray-800 p-6 shadow">
+          <h2 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+            All Bets
+          </h2>
+          {loading && (
+            <p className="text-gray-500 dark:text-gray-400">
+              Loading your bets...
+            </p>
+          )}
           {error && <p className="text-red-500">{error}</p>}
           {!loading && !error && bets.length === 0 && (
-            <p className="text-gray-500">No bets found.</p>
+            <p className="text-gray-500 dark:text-gray-400">No bets found.</p>
           )}
           {!loading && !error && bets.length > 0 && <BetList bets={bets} />}
         </div>
@@ -83,4 +97,5 @@ const BetsPage: React.FC = () => {
     </div>
   );
 };
+
 export default BetsPage;

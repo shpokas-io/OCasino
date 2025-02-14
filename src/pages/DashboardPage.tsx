@@ -12,15 +12,12 @@ import { useNavigate } from "react-router-dom";
 const DashboardPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
   const { bets, loading: betsLoading } = useSelector(
     (state: RootState) => state.bets
   );
-
   const { name, balance, currency } = useSelector(
     (state: RootState) => state.auth
   );
-
   const { transactions, loading: transactionsLoading } = useSelector(
     (state: RootState) => state.transactions
   );
@@ -38,14 +35,14 @@ const DashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gray-100 dark:bg-gray-900">
       <NavBar />
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
             Welcome, {name || "Player"}!
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-300">
             Your current balance:{" "}
             <span className="font-semibold">
               {formattedBalance} {formattedCurrency}
@@ -53,32 +50,38 @@ const DashboardPage: React.FC = () => {
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Recent Bets Section */}
-          <section className="rounded-lg bg-white p-4 shadow transition-shadow hover:shadow-lg">
-            <h2 className="mb-3 text-xl font-semibold text-gray-700">
+          <section className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow transition-shadow hover:shadow-lg">
+            <h2 className="mb-3 text-xl font-semibold text-gray-700 dark:text-gray-200">
               Recent Bets
             </h2>
             {betsLoading ? (
-              <p className="text-gray-500">Loading bets...</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                Loading bets...
+              </p>
             ) : bets && bets.length > 0 ? (
               <BetList bets={bets} />
             ) : (
-              <p className="text-gray-500">No recent bets found.</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No recent bets found.
+              </p>
             )}
           </section>
-          {/* Recent Transactions Section */}
-          <section className="rounded-lg bg-white p-4 shadow transition-shadow hover:shadow-lg">
-            <h2 className="mb-3 text-xl font-semibold text-gray-700">
+          <section className="rounded-lg bg-white dark:bg-gray-800 p-4 shadow transition-shadow hover:shadow-lg">
+            <h2 className="mb-3 text-xl font-semibold text-gray-700 dark:text-gray-200">
               Recent Transactions
             </h2>
             {transactionsLoading ? (
-              <p className="text-gray-500">Loading transactions...</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                Loading transactions...
+              </p>
             ) : transactions && transactions.length > 0 ? (
               <TransactionList transactions={transactions} />
             ) : (
               <div className="text-center space-y-4">
-                <p className="text-gray-500">No recent transactions found.</p>
-                <p className="text-gray-600">
+                <p className="text-gray-500 dark:text-gray-400">
+                  No recent transactions found.
+                </p>
+                <p className="text-gray-600 dark:text-gray-300">
                   Ready to win some money? Start placing bets now!
                 </p>
                 <button
