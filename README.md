@@ -17,6 +17,7 @@ This is a **casino-style wallet system app** that allows users to **register, lo
 - **Protected Routes**: Only authenticated users can access certain pages.
 - **Idle Logout**: Automatic logout after inactivity.
 - **Form Validations**: Validates user inputs before submission.
+- **Spinning animations**: Once user clicks SPIN, there is spinning animation.
 
 ---
 
@@ -129,3 +130,9 @@ frontend
 - Transaction and Betting empty pages should display CTA to start betting instead of default error message.
 
 - Missing proper UI/UX for Footer
+
+- In Transactions card there is a bug -> type: BET it should be Lost
+
+- User balance should display euro sign instead if words
+
+- Recent bets should have CTA as well instead of not bets message for better UX

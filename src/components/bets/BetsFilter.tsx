@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
 import { fetchBets } from "../../store/betSlice";
+import Pagination from "../Pagination";
 
 interface BetsFilterProps {
   currentStatus?: string;
@@ -17,8 +18,7 @@ const BetsFilter: React.FC<BetsFilterProps> = ({
   total,
 }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [status, setStatus] = useState(currentStatus || "");
-
+  const [status, setStatus] = useState(currentStatus ?? "");
   const totalPages = Math.ceil(total / limit);
 
   const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -28,7 +28,7 @@ const BetsFilter: React.FC<BetsFilterProps> = ({
     );
   };
 
-  const goToPage = (page: number) => {
+  const onPageChange = (page: number) => {
     dispatch(fetchBets({ page, limit, status: status || undefined }));
   };
 
@@ -47,27 +47,11 @@ const BetsFilter: React.FC<BetsFilterProps> = ({
           <option value="canceled">Canceled</option>
         </select>
       </div>
-
-      {/* Simple Pagination */}
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage <= 1}
-          className="rounded bg-gray-200 px-3 py-1 disabled:opacity-50"
-        >
-          Prev
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage >= totalPages}
-          className="rounded bg-gray-200 px-3 py-1 disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { RootState } from "../../../store/store";
 import { logout } from "../../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 
+//TODO: FIX BELOW
 const UserMenu: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

@@ -36,6 +36,7 @@ export const fetchTransactions = createAsyncThunk<
       params.type,
       params.id
     );
+    //TODO: Add better error handling
   } catch (error: unknown) {
     return rejectWithValue("Failed to fetch transactions");
   }

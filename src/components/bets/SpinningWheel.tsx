@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { createBet, fetchBets } from "../store/betSlice";
+import { AppDispatch } from "../../store/store";
+import { createBet, fetchBets } from "../../store/betSlice";
 interface SpinningWheelProps {
   betAmount: number;
   selectedColor: "black" | "red" | "blue";

@@ -11,6 +11,7 @@ import {
   selectTransactionsState,
 } from "../store/transactionSlice";
 import TransactionList from "../components/transactions/TransactionList";
+import Pagination from "../components/Pagination";
 
 const TransactionsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -48,12 +49,8 @@ const TransactionsPage: React.FC = () => {
     dispatch(setFilterId(e.target.value));
   };
 
-  const handlePrev = () => {
-    if (page > 1) dispatch(setTransactionPage(page - 1));
-  };
-
-  const handleNext = () => {
-    if (page < totalPages) dispatch(setTransactionPage(page + 1));
+  const onPageChange = (newPage: number) => {
+    dispatch(setTransactionPage(newPage));
   };
 
   return (
@@ -93,25 +90,11 @@ const TransactionsPage: React.FC = () => {
               />
             </div>
           </div>
-          <div className="flex items-center justify-between">
-            <button
-              onClick={handlePrev}
-              disabled={page <= 1}
-              className="rounded bg-gray-200 px-3 py-1 text-sm disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <span className="mx-2 text-sm text-gray-700">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={handleNext}
-              disabled={page >= totalPages}
-              className="rounded bg-gray-200 px-3 py-1 text-sm disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={onPageChange}
+          />
         </div>
         <div className="rounded-md bg-white p-4 shadow">
           {loading && <p className="text-gray-500">Loading transactions...</p>}
