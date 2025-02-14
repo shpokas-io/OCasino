@@ -1,4 +1,3 @@
-// src/pages/BetsPage.tsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
@@ -14,11 +13,13 @@ const BetsPage: React.FC = () => {
   const { bets, loading, error, page, limit, total } = useSelector(
     (state: RootState) => state.bets
   );
-  const balance = useSelector((state: RootState) => state.auth.balance) || 0;
   const [amount, setAmount] = useState<number>(1);
   const [color, setColor] = useState<"black" | "red" | "blue">("red");
   const [formError, setFormError] = useState("");
-  const [spinResult, setSpinResult] = useState<string | null>(null);
+  const [spinResult, setSpinResult] = useState<{
+    outcome: "won" | "lost";
+    message: string;
+  } | null>(null);
   useEffect(() => {
     dispatch(fetchBets({ page: 1, limit: 10 }));
   }, [dispatch]);
@@ -26,7 +27,10 @@ const BetsPage: React.FC = () => {
     winningColor: string,
     outcome: "won" | "lost"
   ) => {
-    setSpinResult(`You ${outcome}! Winning color: ${winningColor}`);
+    setSpinResult({
+      outcome,
+      message: `You ${outcome}! Winning color: ${winningColor}`,
+    });
   };
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
@@ -42,20 +46,27 @@ const BetsPage: React.FC = () => {
           <BetForm
             amount={amount}
             setAmount={setAmount}
-            color={color}
-            setColor={setColor}
             error={formError}
+            color={"black"}
+            setColor={function (value: "black" | "red" | "blue"): void {
+              throw new Error("Function not implemented.");
+            }}
           />
           <div className="mt-4">
             <SpinningWheel
               betAmount={amount}
               selectedColor={color}
               onSpinComplete={handleSpinComplete}
+              onSelectColor={setColor}
             />
           </div>
           {spinResult && (
-            <p className="mt-4 text-center text-lg font-semibold text-green-600">
-              {spinResult}
+            <p
+              className={`mt-4 text-center text-lg font-semibold ${
+                spinResult.outcome === "won" ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {spinResult.message}
             </p>
           )}
         </div>
