@@ -1,23 +1,21 @@
 import api from "./axiosInstance";
+import { loginSchema, registerSchema } from "../validations/authValidations";
+import {
+  AuthResponse,
+  LoginPayload,
+  RegisterPayload,
+} from "../types/authTypes";
 
-interface RegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export const registerUser = async (data: RegisterPayload) => {
+export const registerUser = async (
+  data: RegisterPayload
+): Promise<AuthResponse> => {
+  await registerSchema.validate(data, { abortEarly: false });
   const response = await api.post("/register", data);
   return response.data;
 };
 
-export const loginUser = async (data: LoginPayload) => {
+export const loginUser = async (data: LoginPayload): Promise<AuthResponse> => {
+  await loginSchema.validate(data, { abortEarly: false });
   const response = await api.post("/login", data);
   return response.data;
 };

@@ -1,16 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { placeBet, getBets, cancelBet } from "../api/betApi";
 import { updateBalance } from "./authSlice";
-import { AppDispatch } from "./store";
-
-interface Bet {
-  id: string;
-  amount: number;
-  status: string;
-  createdAt: string;
-  winAmount?: number | null;
-  userChoice?: string;
-}
+import { Bet, BetsResponse } from "../types/betTypes";
+import { extractErrorMessage } from "../util/errorUtils";
 
 interface BetState {
   bets: Bet[];
@@ -30,27 +22,16 @@ const initialState: BetState = {
   error: null,
 };
 
-export const fetchBets = createAsyncThunk(
-  "bets/fetchBets",
-  async (
-    {
-      page,
-      limit,
-      status,
-      betId,
-    }: { page: number; limit: number; status?: string; betId?: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      return await getBets({ page, limit, status, betId });
-    } catch (err) {
-      return rejectWithValue(
-        (err as { response?: { data?: { message?: string } } }).response?.data
-          ?.message || "Failed to fetch bets"
-      );
-    }
+export const fetchBets = createAsyncThunk<
+  BetsResponse,
+  { page: number; limit: number; status?: string; betId?: string }
+>("bets/fetchBets", async (params, { rejectWithValue }) => {
+  try {
+    return await getBets(params);
+  } catch (error: unknown) {
+    return rejectWithValue(extractErrorMessage(error, "Failed to fetch bets"));
   }
-);
+});
 
 export const createBet = createAsyncThunk(
   "bets/createBet",
@@ -60,13 +41,10 @@ export const createBet = createAsyncThunk(
   ) => {
     try {
       const response = await placeBet(amount, color);
-      dispatch(updateBalance(response.balance) as unknown as AppDispatch);
+      dispatch(updateBalance(response.balance));
       return response;
-    } catch (err) {
-      return rejectWithValue(
-        (err as { response?: { data?: { message?: string } } }).response?.data
-          ?.message || "Failed to place bet"
-      );
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, "Failed to place bet"));
     }
   }
 );
@@ -76,12 +54,11 @@ export const removeBet = createAsyncThunk(
   async (betId: string, { dispatch, rejectWithValue }) => {
     try {
       const response = await cancelBet(betId);
-      dispatch(updateBalance(response.balance) as unknown as AppDispatch);
+      dispatch(updateBalance(response.balance));
       return response;
-    } catch (err) {
+    } catch (error: unknown) {
       return rejectWithValue(
-        (err as { response?: { data?: { message?: string } } }).response?.data
-          ?.message || "Failed to cancel bet"
+        extractErrorMessage(error, "Failed to cancel bet")
       );
     }
   }
@@ -104,13 +81,16 @@ const betSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchBets.fulfilled, (state, action) => {
-        state.loading = false;
-        state.bets = action.payload.data;
-        state.total = action.payload.total;
-        state.page = action.payload.page;
-        state.limit = action.payload.limit;
-      })
+      .addCase(
+        fetchBets.fulfilled,
+        (state, action: PayloadAction<BetsResponse>) => {
+          state.loading = false;
+          state.bets = action.payload.data;
+          state.total = action.payload.total;
+          state.page = action.payload.page;
+          state.limit = action.payload.limit;
+        }
+      )
       .addCase(fetchBets.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -133,9 +113,9 @@ const betSlice = createSlice({
       .addCase(removeBet.fulfilled, (state, action) => {
         state.loading = false;
         const canceledBetId = action.payload.transactionId;
-        const idx = state.bets.findIndex((b) => b.id === canceledBetId);
-        if (idx >= 0) {
-          state.bets[idx].status = "canceled";
+        const index = state.bets.findIndex((b) => b.id === canceledBetId);
+        if (index >= 0) {
+          state.bets[index].status = "canceled";
         }
       })
       .addCase(removeBet.rejected, (state, action) => {

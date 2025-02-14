@@ -37,7 +37,7 @@ const NavBar: React.FC = () => {
           to="/"
           className="text-xl font-bold text-blue-600 hover:text-blue-500 flex-shrink-0"
         >
-          TG Lab
+          OCasino
         </Link>
 
         <div className="hidden md:flex items-center space-x-6">

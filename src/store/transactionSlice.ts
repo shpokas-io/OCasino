@@ -1,16 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getTransactions } from "../api/transactionApi";
+import { TransactionApiResponse } from "../types/transactionTypes";
 import { RootState } from "./store";
-import api from "../api/axiosInstance";
-
-interface Transaction {
-  id: string;
-  amount: number;
-  type: string;
-  createdAt: string;
-}
 
 interface TransactionState {
-  transactions: Transaction[];
+  transactions: TransactionApiResponse["data"];
   total: number;
   page: number;
   limit: number;
@@ -31,30 +25,21 @@ const initialState: TransactionState = {
   filterId: "",
 };
 
-export const fetchTransactions = createAsyncThunk(
-  "transactions/fetchTransactions",
-  async (
-    {
-      page,
-      limit,
-      type,
-      id,
-    }: { page: number; limit: number; type?: string; id?: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const params: Record<string, string | number> = { page, limit };
-      if (type) params.type = type;
-      if (id) params.id = id;
-      const response = await api.get("/my-transactions", { params });
-      return response.data;
-    } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch transactions"
-      );
-    }
+export const fetchTransactions = createAsyncThunk<
+  TransactionApiResponse,
+  { page: number; limit: number; type?: string; id?: string }
+>("transactions/fetchTransactions", async (params, { rejectWithValue }) => {
+  try {
+    return await getTransactions(
+      params.page,
+      params.limit,
+      params.type,
+      params.id
+    );
+  } catch (error: unknown) {
+    return rejectWithValue("Failed to fetch transactions");
   }
-);
+});
 
 const transactionSlice = createSlice({
   name: "transactions",

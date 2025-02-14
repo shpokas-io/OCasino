@@ -1,7 +1,14 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { loginUser, registerUser } from "../api/authApi";
+import {
+  AuthResponse,
+  LoginPayload,
+  RegisterPayload,
+} from "../types/authTypes";
+import { RootState } from "./store";
+import { extractErrorMessage } from "../util/errorUtils";
 
-interface UserState {
+interface AuthState {
   id: string | null;
   name: string | null;
   balance: number;
@@ -11,69 +18,36 @@ interface UserState {
   error: string | null;
 }
 
-const storedUser = localStorage.getItem("user");
-let userData = {
+const initialState: AuthState = {
   id: null,
   name: null,
   balance: 0,
-  currency: "EUR",
-  accessToken: null,
-};
-if (storedUser) {
-  try {
-    userData = JSON.parse(storedUser);
-    //TODO: FIX empty block later
-  } catch {}
-}
-
-const initialState: UserState = {
-  id: userData.id,
-  name: userData.name,
-  balance: userData.balance,
-  currency: userData.currency,
-  accessToken: userData.accessToken,
+  currency: "€",
+  accessToken: localStorage.getItem("accessToken") ?? null,
   loading: false,
   error: null,
 };
 
-export const login = createAsyncThunk(
+export const login = createAsyncThunk<AuthResponse, LoginPayload>(
   "auth/login",
-  async (
-    { email, password }: { email: string; password: string },
-    { rejectWithValue }
-  ) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await loginUser({ email, password });
+      const response = await loginUser(payload);
       localStorage.setItem("accessToken", response.accessToken);
       return response;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || "Login failed");
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, "Login failed"));
     }
   }
 );
 
-export const register = createAsyncThunk(
+export const register = createAsyncThunk<void, RegisterPayload>(
   "auth/register",
-  async (
-    {
-      name,
-      email,
-      password,
-      confirmPassword,
-    }: {
-      name: string;
-      email: string;
-      password: string;
-      confirmPassword: string;
-    },
-    { rejectWithValue }
-  ) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      return await registerUser({ name, email, password, confirmPassword });
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.message || "Registration failed"
-      );
+      await registerUser(payload);
+    } catch (error: unknown) {
+      return rejectWithValue(extractErrorMessage(error, "Registration failed"));
     }
   }
 );
@@ -84,27 +58,16 @@ const authSlice = createSlice({
   reducers: {
     logout(state) {
       localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
       state.id = null;
       state.name = null;
       state.balance = 0;
-      state.currency = "EUR";
+      state.currency = "€";
       state.accessToken = null;
       state.loading = false;
       state.error = null;
     },
     updateBalance(state, action: PayloadAction<number>) {
       state.balance = action.payload;
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: state.id,
-          name: state.name,
-          balance: state.balance,
-          currency: state.currency,
-          accessToken: state.accessToken,
-        })
-      );
     },
   },
   extraReducers: (builder) => {
@@ -113,24 +76,17 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.loading = false;
-        state.id = action.payload.id;
-        state.name = action.payload.name;
-        state.balance = action.payload.balance;
-        state.currency = action.payload.currency;
-        state.accessToken = action.payload.accessToken;
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: action.payload.id,
-            name: action.payload.name,
-            balance: action.payload.balance,
-            currency: action.payload.currency,
-            accessToken: action.payload.accessToken,
-          })
-        );
-      })
+      .addCase(
+        login.fulfilled,
+        (state, action: PayloadAction<AuthResponse>) => {
+          state.loading = false;
+          state.id = action.payload.id;
+          state.name = action.payload.name;
+          state.balance = action.payload.balance;
+          state.currency = action.payload.currency;
+          state.accessToken = action.payload.accessToken;
+        }
+      )
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -150,4 +106,5 @@ const authSlice = createSlice({
 });
 
 export const { logout, updateBalance } = authSlice.actions;
+export const selectAuthState = (state: RootState) => state.auth;
 export default authSlice.reducer;

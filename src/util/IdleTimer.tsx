@@ -1,4 +1,3 @@
-// THis logic should be in backend, but not to start messing with mockup-api i will create logout timer here
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/authSlice";
@@ -14,11 +13,9 @@ const IdleTimer: React.FC = () => {
 
   useEffect(() => {
     if (!accessToken) return;
-
     const resetTimer = () => {
       lastActivityRef.current = Date.now();
     };
-
     window.addEventListener("mousemove", resetTimer);
     window.addEventListener("keydown", resetTimer);
     window.addEventListener("click", resetTimer);

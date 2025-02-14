@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch, RootState } from "../store/store";
+import { AppDispatch } from "../store/store";
 import NavBar from "../components/layout/navbar/NavBar";
 import Footer from "../components/layout/Footer";
 import {
