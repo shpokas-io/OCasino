@@ -8,14 +8,16 @@ const IdleTimer: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { accessToken } = useSelector((state: RootState) => state.auth);
-  const inactivityLimit = 10 * 60 * 1000;
+  const inactivityLimit = 10 * 60 * 1000; // 10 minutes
   const lastActivityRef = useRef(Date.now());
 
   useEffect(() => {
     if (!accessToken) return;
+
     const resetTimer = () => {
       lastActivityRef.current = Date.now();
     };
+
     window.addEventListener("mousemove", resetTimer);
     window.addEventListener("keydown", resetTimer);
     window.addEventListener("click", resetTimer);
@@ -24,7 +26,7 @@ const IdleTimer: React.FC = () => {
     const interval = setInterval(() => {
       if (Date.now() - lastActivityRef.current > inactivityLimit) {
         dispatch(logout());
-        navigate("/login");
+        navigate("/login?reason=inactive");
       }
     }, 1000);
 

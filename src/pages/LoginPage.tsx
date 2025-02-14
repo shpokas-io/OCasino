@@ -1,20 +1,29 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { login } from "../store/authSlice";
 import FormInput from "../components/FormInput";
 import Button from "../components/Button";
 import AuthCard from "../components/AuthCard";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [inactivityMessage, setInactivityMessage] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("reason") === "inactive") {
+      setInactivityMessage("You have been logged out due to inactivity.");
+    }
+  }, [location.search]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -27,6 +36,11 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200">
       <AuthCard title="Login">
+        {inactivityMessage && (
+          <p className="mb-4 rounded bg-yellow-100 px-3 py-2 text-yellow-800">
+            {inactivityMessage}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <p className="rounded bg-red-100 px-3 py-2 text-red-600">{error}</p>

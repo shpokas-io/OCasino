@@ -75,7 +75,7 @@ const TransactionsPage: React.FC = () => {
                 className="rounded border-gray-300 p-2"
               >
                 <option value="">All</option>
-                <option value="bet">Bet</option>
+                <option value="bet">Lost</option>
                 <option value="win">Win</option>
                 <option value="cancel">Cancel</option>
               </select>
