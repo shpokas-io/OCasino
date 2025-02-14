@@ -9,6 +9,7 @@ const IdleTimer: React.FC = () => {
   const navigate = useNavigate();
   const { accessToken } = useSelector((state: RootState) => state.auth);
   const inactivityLimit = 10 * 60 * 1000; // 10 minutes
+  // const inactivityLimit = 60 * 1000; // 1 min testing purpose
   const lastActivityRef = useRef(Date.now());
 
   useEffect(() => {

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+// src/pages/BetsPage.tsx
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store/store";
 import { fetchBets } from "../store/betSlice";
@@ -7,17 +8,26 @@ import Footer from "../components/layout/Footer";
 import BetForm from "../components/bets/BetForm";
 import BetsFilter from "../components/bets/BetsFilter";
 import BetsList from "../components/bets/BetList";
-
+import SpinningWheel from "../components/SpinningWheel";
 const BetsPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { bets, loading, error, page, limit, total } = useSelector(
     (state: RootState) => state.bets
   );
-
+  const balance = useSelector((state: RootState) => state.auth.balance) || 0;
+  const [amount, setAmount] = useState<number>(1);
+  const [color, setColor] = useState<"black" | "red" | "blue">("red");
+  const [formError, setFormError] = useState("");
+  const [spinResult, setSpinResult] = useState<string | null>(null);
   useEffect(() => {
     dispatch(fetchBets({ page: 1, limit: 10 }));
   }, [dispatch]);
-
+  const handleSpinComplete = (
+    winningColor: string,
+    outcome: "won" | "lost"
+  ) => {
+    setSpinResult(`You ${outcome}! Winning color: ${winningColor}`);
+  };
   return (
     <div className="flex min-h-screen flex-col bg-gray-100">
       <NavBar />
@@ -29,7 +39,25 @@ const BetsPage: React.FC = () => {
           <h2 className="mb-4 text-xl font-semibold text-gray-700">
             Place a Bet
           </h2>
-          <BetForm />
+          <BetForm
+            amount={amount}
+            setAmount={setAmount}
+            color={color}
+            setColor={setColor}
+            error={formError}
+          />
+          <div className="mt-4">
+            <SpinningWheel
+              betAmount={amount}
+              selectedColor={color}
+              onSpinComplete={handleSpinComplete}
+            />
+          </div>
+          {spinResult && (
+            <p className="mt-4 text-center text-lg font-semibold text-green-600">
+              {spinResult}
+            </p>
+          )}
         </div>
         <div className="mb-4">
           <BetsFilter
@@ -53,5 +81,4 @@ const BetsPage: React.FC = () => {
     </div>
   );
 };
-
 export default BetsPage;

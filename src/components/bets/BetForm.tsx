@@ -1,48 +1,24 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../../store/store";
-import { createBet, fetchBets } from "../../store/betSlice";
-//TODO: FIX LATER
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface BetFormProps {}
-
-const BetForm: React.FC<BetFormProps> = () => {
-  const dispatch = useDispatch<AppDispatch>();
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+interface BetFormProps {
+  amount: number;
+  setAmount: (value: number) => void;
+  color: "black" | "red" | "blue";
+  setColor: (value: "black" | "red" | "blue") => void;
+  error: string;
+}
+const BetForm: React.FC<BetFormProps> = ({
+  amount,
+  setAmount,
+  color,
+  setColor,
+  error,
+}) => {
   const balance = useSelector((state: RootState) => state.auth.balance) || 0;
-
-  const [amount, setAmount] = useState<number>(1);
-  const [color, setColor] = useState<"black" | "red" | "blue">("red");
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (amount < 1) {
-      setError("Minimum bet is €1.00");
-      return;
-    }
-    if (amount > balance) {
-      setError("Bet cannot exceed your current balance");
-      return;
-    }
-
-    setError("");
-    const result = await dispatch(createBet({ amount, color }));
-    if (createBet.fulfilled.match(result)) {
-      dispatch(fetchBets({ page: 1, limit: 10 }));
-      setAmount(1);
-      setColor("red");
-    } else {
-      setError(result.payload as string);
-    }
-  };
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col items-center space-y-4"
-    >
+    <form className="flex flex-col items-center space-y-4">
       {error && <p className="text-red-600">{error}</p>}
-
       <div>
         <label className="block text-sm font-medium text-gray-700">
           Bet Amount (€)
@@ -55,7 +31,6 @@ const BetForm: React.FC<BetFormProps> = () => {
           className="mt-1 w-40 rounded border border-gray-300 p-2 text-center"
         />
       </div>
-
       <div className="flex space-x-4">
         {(["black", "red", "blue"] as const).map((c) => (
           <button
@@ -76,15 +51,7 @@ const BetForm: React.FC<BetFormProps> = () => {
           </button>
         ))}
       </div>
-
-      <button
-        type="submit"
-        className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-      >
-        Place Bet
-      </button>
     </form>
   );
 };
-
 export default BetForm;
