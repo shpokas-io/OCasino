@@ -57,7 +57,6 @@ This is a **casino-style wallet system app** that allows users to **register, lo
 
 ## 📦 Requirements
 
-- **Node.js >= 14.x**
 - **npm or yarn**
 - **Mock API from https://github.com/shpokas-io/mock-api**
 
@@ -181,4 +180,3 @@ The app will be available at **`http://localhost:5173/`**.
 - **Recent bets improvement**: Should include a CTA instead of a `no bets` message for better UX.
 - **Dark/Light mode issue**: Implemented but not working correctly. The biggest issue is that it was not started from a React hook for dark mode, which would have made it much easier. A note for future projects.
 - **Bets page re-rendering**: Once a user clicks spin, a re-render happens. Need a solution to fix this.
-- **Code refactoring**: A lot of refactoring is needed to improve maintainability and readability.
